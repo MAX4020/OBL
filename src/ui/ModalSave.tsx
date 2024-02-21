@@ -18,10 +18,12 @@ const ModalSave = ({}:IModalSave) => {
     else{
     setListArea([...listArea, {name:nameArea.current.value, start:xyStart, end:xyEnd}])
     setActiveSave(false)
+    nameArea.current.value = ""
     }
   }
   const cancleSaveArea = () => {
     setActiveSave(false)
+    nameArea.current.value = ""
   }
 
   const styleButton = classNames(

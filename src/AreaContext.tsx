@@ -16,6 +16,7 @@ export interface IAreaContext{
     setxyStart: (state:[number,number]) => void
     xyEnd: [number,number]
     setxyEnd: (state:[number,number]) => void
+    deleteArea: (id: number) => void
 }
 
 export const AreaContext = createContext<IAreaContext>({
@@ -30,7 +31,8 @@ export const AreaContext = createContext<IAreaContext>({
     xyStart: [0,0],
     setxyStart: () => {},
     xyEnd: [0,0],
-    setxyEnd: () => {}
+    setxyEnd: () => {},
+    deleteArea: () => {},
 })
 
 export const MyContextProvider = ({children}:{children:ReactNode}) =>{
@@ -40,9 +42,13 @@ export const MyContextProvider = ({children}:{children:ReactNode}) =>{
     const [activeSave, setActiveSave] = useState<boolean>(false)
     const [xyStart, setxyStart] = useState<[number,number]>([0,0])
     const [xyEnd, setxyEnd] = useState<[number,number]>([1,1])
+    
+    const deleteArea = (id:number) => {
+        setListArea(listArea.filter((item) => item.id !== id))
+    }
 
     return(
-        <AreaContext.Provider value={{active,setActive,listArea,setListArea,startArea,setStartArea,activeSave,setActiveSave,xyStart,setxyStart,xyEnd,setxyEnd}}>
+        <AreaContext.Provider value={{active,setActive,listArea,setListArea,startArea,setStartArea,activeSave,setActiveSave,xyStart,setxyStart,xyEnd,setxyEnd, deleteArea}}>
             {children}
         </AreaContext.Provider>
     )

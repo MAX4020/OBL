@@ -25,7 +25,7 @@ const MenuCust = ({
   presets,
 }: IMenuCust) => {
   const [mouseIn, setMouseIn] = useState<boolean>(false)
-  const { active, setActive, startArea,setStartArea, listArea, setListArea} = useContext(AreaContext)
+  const { active, setActive, startArea,setStartArea, listArea, setListArea, setxyStart, setxyEnd, deleteArea} = useContext(AreaContext)
 
   const showMenu = () => {setActive(true)}
   const hideMenu = () => {setActive(false)}
@@ -37,6 +37,8 @@ const MenuCust = ({
   const hideCut = () => {setMouseIn(false)}
 
   const start = () => {
+    setxyStart([0,0])
+    setxyEnd([0,0])
     setActive(false)
     setStartArea(true)
   }
@@ -120,7 +122,7 @@ const MenuCust = ({
         </div>
         <div className = {styleDiv}>
           <p className = {styleText}>Список областей</p>
-          <ul>{listArea.map((item:any, _index: number) => (<li className="list-none flex justify-around items-center border-2 border-slate-500">{_index + 1}. {item.name} : {`${item.start}x${item.end}`}<button onClick={} className={styleButton}>X</button></li>))}</ul>
+          <ul>{listArea.map((item:any, _index: number) => (<li className="list-none flex justify-around items-center border-2 border-slate-500">{_index + 1}. {item.name} : {`${item.start}x${item.end}`}<button onClick={deleteArea(_index)} className={styleButton}>X</button></li>))}</ul>
           <button className = {styleButton} onClick={(e) => start()}>
             Добавить область
           </button>
