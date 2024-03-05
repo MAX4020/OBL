@@ -2,6 +2,7 @@ import { BlobOptions } from "buffer";
 import { FunctionComponent, HTMLAttributes, ReactNode, createContext, useState } from "react";
 
 export type IArea = {name:string, start:[number,number], end:[number,number]}
+export type IPreset = {namePreset:string}
 
 export interface IAreaContext{
     active: boolean
@@ -17,13 +18,17 @@ export interface IAreaContext{
     xyEnd: [number,number]
     setxyEnd: (state:[number,number]) => void
     deleteArea: (id: number) => void
+    listPreset: IPreset[]
+    setListPreset: (state:IPreset[])=>void
+    activeSavePreset: boolean
+    setActiveSavePreset: (state:boolean) => void
 }
 
 export const AreaContext = createContext<IAreaContext>({
     active: false,
     setActive: ()=>{},
     listArea: [],
-    setListArea: ()=>{console.log("123")},
+    setListArea: ()=>{},
     startArea: false,
     setStartArea: ()=>{},
     activeSave: false,
@@ -33,6 +38,10 @@ export const AreaContext = createContext<IAreaContext>({
     xyEnd: [0,0],
     setxyEnd: () => {},
     deleteArea: () => {},
+    listPreset: [],
+    setListPreset: () => {},
+    activeSavePreset: false,
+    setActiveSavePreset: () => {}
 })
 
 export const MyContextProvider = ({children}:{children:ReactNode}) =>{
@@ -42,13 +51,15 @@ export const MyContextProvider = ({children}:{children:ReactNode}) =>{
     const [activeSave, setActiveSave] = useState<boolean>(false)
     const [xyStart, setxyStart] = useState<[number,number]>([0,0])
     const [xyEnd, setxyEnd] = useState<[number,number]>([1,1])
+    const [listPreset, setListPreset] = useState<IPreset[]>([])
+    const [activeSavePreset, setActiveSavePreset] = useState<boolean>(false)
     
     const deleteArea = (id:number) => {
-        setListArea(listArea.filter((item) => item.id !== id))
+        setListArea(listArea.filter((item) => id))
     }
 
     return(
-        <AreaContext.Provider value={{active,setActive,listArea,setListArea,startArea,setStartArea,activeSave,setActiveSave,xyStart,setxyStart,xyEnd,setxyEnd, deleteArea}}>
+        <AreaContext.Provider value={{activeSavePreset, setActiveSavePreset,active,setActive,listArea,setListArea,startArea,setStartArea,activeSave,setActiveSave,xyStart,setxyStart,xyEnd,setxyEnd, deleteArea, listPreset, setListPreset}}>
             {children}
         </AreaContext.Provider>
     )

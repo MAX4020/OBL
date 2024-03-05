@@ -9,7 +9,6 @@ const ModalSave = ({}:IModalSave) => {
   const {listArea, setListArea,activeSave,setActiveSave, xyStart, setxyStart, xyEnd, setxyEnd} = useContext(AreaContext)
   const [Err, setErr] = useState<boolean>(false)
   const nameArea = useRef<any>(null)
-  console.log(nameArea)
 
   const saveArea = () => {
     if (nameArea.current.value == ""){

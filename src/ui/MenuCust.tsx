@@ -25,7 +25,7 @@ const MenuCust = ({
   presets,
 }: IMenuCust) => {
   const [mouseIn, setMouseIn] = useState<boolean>(false)
-  const { active, setActive, startArea,setStartArea, listArea, setListArea, setxyStart, setxyEnd, deleteArea} = useContext(AreaContext)
+  const { active, setActive, startArea,setStartArea, listArea, setListArea, setxyStart, setxyEnd, deleteArea, listPreset, setListPreset, setActiveSavePreset} = useContext(AreaContext)
 
   const showMenu = () => {setActive(true)}
   const hideMenu = () => {setActive(false)}
@@ -41,6 +41,11 @@ const MenuCust = ({
     setxyEnd([0,0])
     setActive(false)
     setStartArea(true)
+  }
+
+  const savePreset = () => {
+    setActiveSavePreset(true)
+    setActive(false)
   }
 
   const styleMenuButton = classNames(
@@ -72,6 +77,7 @@ const MenuCust = ({
     " p-2 hover:bg-slate-600 transition-all active:bg-slate-500 bg-slate-800"
   );
   const styleText = classNames("p-2 border-b-2 border-slate-600");
+  const styleList = classNames("list-none flex justify-around items-center border-2 border-slate-500")
 
   const opt = useOutsideClick(hideMenu)
 
@@ -122,14 +128,15 @@ const MenuCust = ({
         </div>
         <div className = {styleDiv}>
           <p className = {styleText}>Список областей</p>
-          <ul>{listArea.map((item:any, _index: number) => (<li className="list-none flex justify-around items-center border-2 border-slate-500">{_index + 1}. {item.name} : {`${item.start}x${item.end}`}<button onClick={deleteArea(_index)} className={styleButton}>X</button></li>))}</ul>
+          <ul>{listArea.map((item:any, _index: number) => (<li className={styleList}>{_index + 1}. {item.name} : {`${item.start}x${item.end}`}<button onClick={()=>deleteArea(item.id)} className={styleButton}>X</button></li>))}</ul>
           <button className = {styleButton} onClick={(e) => start()}>
             Добавить область
           </button>
         </div>
         <div className = {styleDiv}>
           <p className = {styleText}>Готовые пресеты областей</p>
-          <button className = {styleButton}>Добавить пресет</button>
+          <ul>{listPreset.map((item:any, _index:number) => (<li className={styleList}>{_index + 1}. {item.namePreset}<button className={styleButton}>Y</button><button className={styleButton}>X</button></li>))}</ul>
+          <button onClick={savePreset} className = {styleButton}>Сохранить Пресет</button>
         </div>
       </div>
       </div>

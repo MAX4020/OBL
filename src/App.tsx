@@ -11,6 +11,7 @@ import ModalSave from "./ui/ModalSave";
 import SavedArea from "./ui/SavedArea";
 import Displays from "./ui/Displays";
 import GridNet from "./ui/GridNet";
+import ModalSavePreset from "./ui/ModalSavePreset";
 
 const monitors: any = [
   {
@@ -54,6 +55,7 @@ function App() {
           presets = {""}
         />
         <ModalSave></ModalSave>
+        <ModalSavePreset/>
       </MyContextProvider>
     </>
   );
