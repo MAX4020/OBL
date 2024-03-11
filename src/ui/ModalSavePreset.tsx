@@ -12,7 +12,7 @@ const ModalSavePreset = () => {
       setErr(true)
     }
     else{
-      setListPreset([...listArea, {namePreset:namePreset.current.value}])
+      setListPreset(prev => [...prev, {areas:listArea, name:namePreset.current.value}])
       setActiveSavePreset(false)
       namePreset.current.value = ""
     }

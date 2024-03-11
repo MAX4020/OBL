@@ -25,7 +25,7 @@ const MenuCust = ({
   presets,
 }: IMenuCust) => {
   const [mouseIn, setMouseIn] = useState<boolean>(false)
-  const { active, setActive, startArea,setStartArea, listArea, setListArea, setxyStart, setxyEnd, deleteArea, listPreset, setListPreset, setActiveSavePreset} = useContext(AreaContext)
+  const {changePreset, active, setActive, startArea,setStartArea, listArea, setListArea, setxyStart, setxyEnd, deleteArea, listPreset, setListPreset, setActiveSavePreset, deletePreset} = useContext(AreaContext)
 
   const showMenu = () => {setActive(true)}
   const hideMenu = () => {setActive(false)}
@@ -128,14 +128,14 @@ const MenuCust = ({
         </div>
         <div className = {styleDiv}>
           <p className = {styleText}>Список областей</p>
-          <ul>{listArea.map((item:any, _index: number) => (<li className={styleList}>{_index + 1}. {item.name} : {`${item.start}x${item.end}`}<button onClick={()=>deleteArea(item.id)} className={styleButton}>X</button></li>))}</ul>
+          <ul>{listArea.map((item, _index: number) => (<li className={styleList}>{_index + 1}. {item.name} : {`${item.start}x${item.end}`}<button onClick={()=>deleteArea(_index)} className={styleButton}>X</button></li>))}</ul>
           <button className = {styleButton} onClick={(e) => start()}>
             Добавить область
           </button>
         </div>
         <div className = {styleDiv}>
           <p className = {styleText}>Готовые пресеты областей</p>
-          <ul>{listPreset.map((item:any, _index:number) => (<li className={styleList}>{_index + 1}. {item.namePreset}<button className={styleButton}>Y</button><button className={styleButton}>X</button></li>))}</ul>
+          <ul>{listPreset.map((item, _index:number) => (<li className={styleList}>{_index + 1}. {item.name}<button onClick={() => changePreset(_index)} className={styleButton}>Y</button><button onClick={()=>deletePreset(_index)} className={styleButton}>X</button></li>))}</ul>
           <button onClick={savePreset} className = {styleButton}>Сохранить Пресет</button>
         </div>
       </div>
