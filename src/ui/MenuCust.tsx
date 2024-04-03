@@ -1,8 +1,8 @@
 import classNames from "classnames";
-import { useState, createContext, useContext } from "react";
+import { useState, createContext, useContext, useEffect, useRef } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import useOutsideClick from "../hooks/useClickOutside";
-import { AreaContext } from "../AreaContext";
+import { AreaContext, IArea } from "../AreaContext";
 
 interface IMenuCust extends React.HTMLAttributes<HTMLElement> {
   fCol: number;
@@ -25,7 +25,9 @@ const MenuCust = ({
   presets,
 }: IMenuCust) => {
   const [mouseIn, setMouseIn] = useState<boolean>(false)
-  const {changePreset, active, setActive, startArea,setStartArea, listArea, setListArea, setxyStart, setxyEnd, deleteArea, listPreset, setListPreset, setActiveSavePreset, deletePreset} = useContext(AreaContext)
+  const {currentPresetId,changePreset, active, setActive, startArea,setStartArea, listArea, setListArea, setxyStart, setxyEnd, deleteArea, listPreset, setListPreset, setActiveSavePreset, deletePreset} = useContext(AreaContext)
+  const savedListArea = useRef<IArea[]>([])
+  const [isChanged, setIsChanged] = useState<boolean>(false)
 
   const showMenu = () => {setActive(true)}
   const hideMenu = () => {setActive(false)}
@@ -43,9 +45,13 @@ const MenuCust = ({
     setStartArea(true)
   }
 
-  const savePreset = () => {
+  const createPreset = () => {
     setActiveSavePreset(true)
     setActive(false)
+  }
+
+  const savePreset = () => {
+    setListPreset(prev => prev.map((value, idx) => idx === currentPresetId ? {...value, areas:listArea} : value))
   }
 
   const styleMenuButton = classNames(
@@ -80,6 +86,18 @@ const MenuCust = ({
   const styleList = classNames("list-none flex justify-around items-center border-2 border-slate-500")
 
   const opt = useOutsideClick(hideMenu)
+
+  useEffect (() => {
+    savedListArea.current = [...listArea]
+  }, [currentPresetId])
+
+  useEffect (() => {
+    if (JSON.stringify(listArea) != JSON.stringify(savedListArea.current) ) {
+      setIsChanged(true)
+    } else {
+      setIsChanged(false)
+    }
+  }, [listArea.length])
 
   return (
     <>
@@ -136,7 +154,8 @@ const MenuCust = ({
         <div className = {styleDiv}>
           <p className = {styleText}>Готовые пресеты областей</p>
           <ul>{listPreset.map((item, _index:number) => (<li className={styleList}>{_index + 1}. {item.name}<button onClick={() => changePreset(_index)} className={styleButton}>Y</button><button onClick={()=>deletePreset(_index)} className={styleButton}>X</button></li>))}</ul>
-          <button onClick={savePreset} className = {styleButton}>Сохранить Пресет</button>
+          <button onClick={createPreset} className = {styleButton}>Создать Пресет</button>
+          {isChanged && listPreset.length != 0 && <button onClick={savePreset} className = {styleButton}>Сохранить Пресет</button>}
         </div>
       </div>
       </div>

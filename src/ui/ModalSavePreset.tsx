@@ -3,7 +3,7 @@ import { AreaContext } from "../AreaContext";
 import classNames from "classnames";
 
 const ModalSavePreset = () => {
-  const {activeSavePreset,setActiveSavePreset,listArea,setListArea,listPreset,setListPreset} = useContext(AreaContext)
+  const {setCurrentPresetId,currentPresetId,activeSavePreset,setActiveSavePreset,listArea,setListArea,listPreset,setListPreset} = useContext(AreaContext)
   const namePreset = useRef<any>(null)
   const [Err, setErr] = useState<boolean>(false)
 
@@ -12,9 +12,11 @@ const ModalSavePreset = () => {
       setErr(true)
     }
     else{
-      setListPreset(prev => [...prev, {areas:listArea, name:namePreset.current.value}])
+      setListPreset(prev => [...prev, {name:namePreset.current.value}])
       setActiveSavePreset(false)
       namePreset.current.value = ""
+      setListArea([])
+      setCurrentPresetId(listPreset.length)
     }
   }
   const cancleSavePreset = () => {

@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import Chunk from "./Chunk";
 import { AreaContext } from "../AreaContext";
 
@@ -7,6 +7,7 @@ interface IDisplays extends React.HTMLAttributes<HTMLElement> {
 }
 
 const Displays = ({monitors}:IDisplays) => {
+
   return ( 
     <>
     {monitors.map((item: any) => (
