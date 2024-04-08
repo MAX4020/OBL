@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { useContext } from "react";
 import { AreaContext } from "../AreaContext";
+import { styleGrid } from "./Style";
 
 interface IGridNet extends React.HTMLAttributes<HTMLElement> {
   fCol: number,
@@ -24,8 +25,6 @@ const GridNet = ({fCol,fRow}:IGridNet) => {
   }
 
   const onMouseEnterHandler = (row: number, col: number) => {
-    // console.log(`row = ${row}`)
-    // console.log(`col = ${col}`)
     if (startArea) {
       setxyEnd([col+1,row+1])
     }
@@ -46,7 +45,6 @@ const GridNet = ({fCol,fRow}:IGridNet) => {
     return cells;
    
   };
-  const styleGrid = classNames("absolute top-0 left-0 w-full h-full grid");
   return ( 
     <>
     {startArea &&

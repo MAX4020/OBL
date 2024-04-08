@@ -1,8 +1,9 @@
 import classNames from "classnames";
-import { useState, createContext, useContext, useEffect, useRef } from "react";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
+import { useState, useContext, useEffect, useRef } from "react";
+import { FaAlignJustify, FaChevronLeft, FaDeleteLeft } from "react-icons/fa6";
 import useOutsideClick from "../hooks/useClickOutside";
 import { AreaContext, IArea } from "../AreaContext";
+import { styleButton, styleDiv, styleIcon, styleInput, styleList, styleMenu, styleText } from "./Style";
 
 interface IMenuCust extends React.HTMLAttributes<HTMLElement> {
   fCol: number;
@@ -15,32 +16,55 @@ interface IMenuCust extends React.HTMLAttributes<HTMLElement> {
 }
 
 const MenuCust = ({
-  children,
   fCol,
   fRow,
   setFCol,
   setFRow,
   monitors,
-  regions,
-  presets,
 }: IMenuCust) => {
+  const {
+    isChanged,
+    setIsChanged,
+    isAddedArea,
+    setIsAddedArea,
+    isCreated,
+    setIsCreated,
+    currentPresetId,
+    changePreset,
+    active,
+    setActive,
+    setStartArea,
+    listArea,
+    setListArea,
+    setxyStart,
+    setxyEnd,
+    deleteArea,
+    listPreset,
+    setListPreset,
+    setActiveSavePreset,
+    deletePreset,
+  } = useContext(AreaContext);
   const [mouseIn, setMouseIn] = useState<boolean>(false)
-  const {currentPresetId,changePreset, active, setActive, startArea,setStartArea, listArea, setListArea, setxyStart, setxyEnd, deleteArea, listPreset, setListPreset, setActiveSavePreset, deletePreset} = useContext(AreaContext)
   const savedListArea = useRef<IArea[]>([])
-  const [isChanged, setIsChanged] = useState<boolean>(false)
 
-  const showMenu = () => {setActive(true)}
-  const hideMenu = () => {setActive(false)}
+  const showMenu = () => setActive(true)
+  const hideMenu = () => setActive(false)
 
-  const handleChangeCol = (event: any) => {setFCol(event.target.value)}
-  const handleChangeRow = (event: any) => {setFRow(event.target.value)}
+  const handleChangeCol = (event: any) => setFCol(event.target.value)
+  const handleChangeRow = (event: any) => setFRow(event.target.value)
 
-  const showCut = () => {setMouseIn(true)}
-  const hideCut = () => {setMouseIn(false)}
+  const showCut = () => setMouseIn(true)
+  const hideCut = () => setMouseIn(false)
+
+  const outMenu = () => {
+    if(active){
+      setTimeout(() => setActive(false), 150)
+    }
+  }
 
   const start = () => {
-    setxyStart([0,0])
-    setxyEnd([0,0])
+    setxyStart([0, 0])
+    setxyEnd([0, 0])
     setActive(false)
     setStartArea(true)
   }
@@ -48,14 +72,40 @@ const MenuCust = ({
   const createPreset = () => {
     setActiveSavePreset(true)
     setActive(false)
+    setIsAddedArea(false)
   }
 
   const savePreset = () => {
-    setListPreset(prev => prev.map((value, idx) => idx === currentPresetId ? {...value, areas:listArea} : value))
+    setIsChanged(false)
+    setIsAddedArea(true)
+    setIsCreated(false)
+    setListPreset((prev) =>
+      prev.map((value, idx) => (idx === currentPresetId ? { ...value, areas: listArea } : value))
+    )
   }
 
+  const reductPreset = () => {
+    setIsChanged(true)
+    setIsCreated(true)
+    setIsAddedArea(false)
+  };
+
+  const opt = useOutsideClick(outMenu);
+
+  useEffect(() => {
+    savedListArea.current = [...listArea];
+  }, [currentPresetId]);
+
+  useEffect(() => {
+    if (JSON.stringify(listArea) != JSON.stringify(savedListArea.current)) {
+      setIsChanged(true);
+    } else {
+      setIsChanged(false);
+    }
+  }, [listArea.length]);
+
   const styleMenuButton = classNames(
-    "absolute bg-slate-700 top-[47%] text-slate-400 flex justify-center items-center rounded-l-md w-[30px] h-[60px] hover:bg-slate-600 transition-all active:bg-slate-500",
+    "absolute bg-slate-700 top-[47%] text-slate-400 flex justify-center items-center rounded-l-md w-[40px] h-[80px] hover:bg-slate-600 transition-all active:bg-slate-500",
     {
       "right-[399px]": active,
       "right-[10px]": !active,
@@ -63,101 +113,122 @@ const MenuCust = ({
     {
       "right-[10px]": !mouseIn,
       "right-[29px] bg-slate-600": mouseIn,
-    }
-  );
-  const styleMenu = classNames(
-    "absolute right-0 bg-slate-700 text-slate-400 h-full w-[400px] flex flex-col before:scale-0 after:scale-100 transition-all"
-  );
+    })
   const styleMenuCut = classNames(
     "bg-slate-700 absolute h-full top-0 right-0 w-[30px] transition-all",
     {
       "translate-x-[20px] ": !mouseIn,
       "translate-x-[0px] bg-slate-600": mouseIn,
-    }
-  );
-  const styleDiv = classNames(
-    "border-2 border-slate-500 transition-all flex flex-col justify-center text-center w-full"
-  );
-  const styleInput = classNames("m-2 h-[40px] bg-slate-800 outline-none p-2");
-  const styleButton = classNames(
-    " p-2 hover:bg-slate-600 transition-all active:bg-slate-500 bg-slate-800"
-  );
-  const styleText = classNames("p-2 border-b-2 border-slate-600");
-  const styleList = classNames("list-none flex justify-around items-center border-2 border-slate-500")
-
-  const opt = useOutsideClick(hideMenu)
-
-  useEffect (() => {
-    savedListArea.current = [...listArea]
-  }, [currentPresetId])
-
-  useEffect (() => {
-    if (JSON.stringify(listArea) != JSON.stringify(savedListArea.current) ) {
-      setIsChanged(true)
-    } else {
-      setIsChanged(false)
-    }
-  }, [listArea.length])
+    })
 
   return (
     <>
-    <div ref={opt}>
-      <div
-        onMouseEnter = {(e) => showCut()}
-        onMouseLeave = {(e) => hideCut()}
-        onClick = {!active ? showMenu : hideMenu}
-        className = {styleMenuCut}
-      ></div>
-      <button
-        onMouseEnter = {(e) => showCut()}
-        onMouseLeave = {(e) => hideCut()}
-        onClick = {!active ? showMenu : hideMenu}
-        className = {styleMenuButton}
-      >
-        <FaChevronLeft className = {classNames({ "rotate-180": active })} />
-      </button>
-      <div
-        className = {
-          !active
-            ? classNames(styleMenu, "translate-x-[100%]")
-            : classNames(styleMenu, "translate-x-[0%]")
-        }
-      >
-        <div className = {styleDiv}>
-          <p className = {styleText}>Список мониторов</p>
-          <ul>{monitors}</ul>
+      <div ref={opt}>
+        <div
+          onMouseEnter={(e) => showCut()}
+          onMouseLeave={(e) => hideCut()}
+          onClick={!active ? showMenu : hideMenu}
+          className={styleMenuCut}
+        ></div>
+        <button
+          onMouseEnter={(e) => showCut()}
+          onMouseLeave={(e) => hideCut()}
+          onClick={!active ? showMenu : hideMenu}
+          className={styleMenuButton}
+        >
+          <FaChevronLeft className={classNames({ "rotate-180": active })} />
+        </button>
+        <div
+          className={
+            !active
+              ? classNames(styleMenu, "translate-x-[100%]")
+              : classNames(styleMenu, "translate-x-[0%]")
+          }
+        >
+          <div className={styleDiv}>
+            <p className={styleText}>Список мониторов</p>
+            <ul>{monitors}</ul>
+          </div>
+          <div className={styleDiv}>
+            <p className="p-2 border-b-2 border-slate-600">Задать минимальный формат</p>
+            <input
+              className={styleInput}
+              type="number"
+              placeholder="Колонны"
+              value={fCol}
+              onChange={(event) => handleChangeCol(event)}
+            />
+            <input
+              className={styleInput}
+              type="number"
+              placeholder="Строки"
+              value={fRow}
+              onChange={(event) => handleChangeRow(event)}
+            />
+          </div>
+          {isCreated &&
+           listPreset.length != 0 &&
+          (
+            <div className={styleDiv}>
+              <p className={styleText}>Список областей</p>
+              <ul>
+                {listArea.map((item, _index: number) => (
+                  <li className={styleList}>
+                    <div className="w-[50%]">
+                      {_index + 1}. {item.name} : {`${item.start}x${item.end}`}
+                      </div>
+                    <div className="w-[50%]">
+                      <button onClick={() => deleteArea(_index)} className={classNames("" + styleIcon)}>
+                        <FaDeleteLeft/>
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              <button className={styleButton} onClick={(e) => start()}>
+                Добавить область
+              </button>
+            </div>
+          )}
+          <div className={styleDiv}>
+            <p className={styleText}>Готовые пресеты областей</p>
+            <ul>
+              {listPreset.map((item, _index: number) => (
+                <li className={styleList}>
+                  <div className="w-[50%]">
+                    {_index + 1}. {item.name}
+                  </div>
+                  <div className="w-[50%] flex">
+                    <button onClick={() => changePreset(_index)} className={styleIcon}>
+                      <FaAlignJustify/>
+                    </button>
+                    <button onClick={() => deletePreset(_index)} className={styleIcon}>
+                      <FaDeleteLeft/>
+                    </button>
+                  </div>
+                  
+                </li>
+              ))}
+            </ul>
+            <button onClick={createPreset} className={styleButton}>
+              Создать Пресет
+            </button>
+            {isChanged && 
+            listPreset.length != 0 && 
+            (
+              <button onClick={savePreset} className={styleButton}>
+                Сохранить Пресет
+              </button>
+            )}
+            {isAddedArea && 
+            listPreset.length !=0 &&
+            (
+              <button onClick={reductPreset} className={styleButton}>
+                Редактировать Пресет
+              </button>
+            )}
+          </div>
         </div>
-        <div className = {styleDiv}>
-          <p className = "p-2 border-b-2 border-slate-600">Задать минимальный формат</p>
-          <input
-            className = {styleInput}
-            type = "number"
-            placeholder = "Колонны"
-            value = {fCol}
-            onChange= { (event) => handleChangeCol(event)}
-          />
-          <input
-            className = {styleInput}
-            type = "number"
-            placeholder = "Строки"
-            value = {fRow}
-            onChange = {(event) => handleChangeRow(event)}
-          />
-        </div>
-        <div className = {styleDiv}>
-          <p className = {styleText}>Список областей</p>
-          <ul>{listArea.map((item, _index: number) => (<li className={styleList}>{_index + 1}. {item.name} : {`${item.start}x${item.end}`}<button onClick={()=>deleteArea(_index)} className={styleButton}>X</button></li>))}</ul>
-          <button className = {styleButton} onClick={(e) => start()}>
-            Добавить область
-          </button>
-        </div>
-        <div className = {styleDiv}>
-          <p className = {styleText}>Готовые пресеты областей</p>
-          <ul>{listPreset.map((item, _index:number) => (<li className={styleList}>{_index + 1}. {item.name}<button onClick={() => changePreset(_index)} className={styleButton}>Y</button><button onClick={()=>deletePreset(_index)} className={styleButton}>X</button></li>))}</ul>
-          <button onClick={createPreset} className = {styleButton}>Создать Пресет</button>
-          {isChanged && listPreset.length != 0 && <button onClick={savePreset} className = {styleButton}>Сохранить Пресет</button>}
-        </div>
-      </div>
       </div>
     </>
   );

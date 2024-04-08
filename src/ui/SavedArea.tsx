@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { useContext } from "react";
 import { AreaContext } from "../AreaContext";
+import { styleGrid } from "./Style";
 
 interface ISavedArea extends React.HTMLAttributes<HTMLElement> {
   fCol: number,
@@ -8,9 +9,7 @@ interface ISavedArea extends React.HTMLAttributes<HTMLElement> {
 }
 
 const SavedArea = ({fCol,fRow}:ISavedArea) => {
-  const {listArea,setListArea} = useContext(AreaContext)
-  
-  const styleGrid = classNames("absolute top-0 left-0 w-full h-full grid");
+  const {listArea} = useContext(AreaContext)
 
   return ( 
     <>

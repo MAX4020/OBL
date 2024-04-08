@@ -1,17 +1,13 @@
-import { HTMLAttributes, useContext, useRef, useState } from "react";
-import { FaChevronRight, FaChevronLeft } from "react-icons/fa6";
+import { useState } from "react";
 import "./App.css";
-import Chunk from "./ui/Chunk";
 import Monitor from "./ui/Monitor";
 import MenuCust from "./ui/MenuCust";
-import useOutsideClick from "./hooks/useClickOutside";
-import classNames from "classnames";
-import { AreaContext, MyContextProvider } from "./AreaContext";
+import { MyContextProvider } from "./AreaContext";
 import ModalSave from "./ui/ModalSave";
 import SavedArea from "./ui/SavedArea";
 import Displays from "./ui/Displays";
 import GridNet from "./ui/GridNet";
-import ModalSavePreset from "./ui/ModalSavePreset";
+import ModalCreatePreset from "./ui/ModalCreatePreset";
 
 const monitors: any = [
   {
@@ -52,10 +48,9 @@ function App() {
           setFCol = {setFCol}
           setFRow = {setFRow}
           monitors = {monitors.map((item: any, _index: number) => (<li className = "list-none p-2">{_index + 1}. {item.name} : {`[${item.size.h}:${item.size.w}]`}</li>))}
-          presets = {""}
         />
         <ModalSave></ModalSave>
-        <ModalSavePreset/>
+        <ModalCreatePreset/>
       </MyContextProvider>
     </>
   );
